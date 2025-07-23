@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+  
+<!-- Mirrored from ghostingpen.neocities.org/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 23 Jul 2025 15:16:15 GMT -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Max Fear Coin</title>
+    <!-- The style.css file allows you to change the look of your web pages.
+         If you include the next line in all your web pages, they will all share the same look.
+         This makes it easier to make new pages for your site. -->
+    <link rel="icon" type="image/png" href="favicon.png">
+      <script src="../kit.fontawesome.com/f936906ae0.html" crossorigin="anonymous"></script>
+  </head>
+  <body>
+        <div id="container">
+  <a href="index.html"><div id="header"></div></a>
+            <div id="flex">
+                <aside id="leftSidebar" style="margin-right: 0px;">
+<h2><center>MaxFear</center></h2>
+<center><p>last fear on Solana: <span id="lastupdate"></span></p></center>
+<div class="box3" style="overflow-y:scroll">
+    <ul style="padding-left:20px;">
+        <li>7/23/25 – network spike triggered forced slippage. trader response: panic.</li>
+        <li>7/21/25 – leaderboard updated: top wallet down -84%. survived 19 re-entries.</li>
+        <li>7/18/25 – new mechanism deployed: delayed execution randomized between 5–90 seconds.</li>
+        <li>7/15/25 – burn loop bug fixed. unintended 6-hour loop caused mass auto-losses.</li>
+        <li>7/12/25 – psychological audit completed. confirmation: 92% of traders acted against their own strategy.</li>
+        <li>7/10/25 – inverted chart feed went live. confusion metrics exceeded expectations.</li>
+        <li>7/06/25 – black wallet logged. 1 address absorbed 30 exits and remains unmoved.</li>
+        <li>7/01/25 – “regret floor” mechanism enabled. price floor removed for 72 hrs to study behavior.</li>
+        <li>6/28/25 – Max Pain Token enters Solana mainnet. trades begin. suffering is now on-chain.</li>
+    </ul>
+</div>
+
+  <p></p>
+    <center><div class="box">
+    
+
+
+        <script>
+            // initiate variables
+            let now_playing = document.querySelector(".now-playing");
+            let track_name = document.querySelector(".track-name");
+            let track_artist = document.querySelector(".track-artist");
+
+
+            let playpause_btn = document.querySelector(".playpause-track");
+            let next_btn = document.querySelector(".next-track");
+            let prev_btn = document.querySelector(".prev-track");
+
+            let seek_slider = document.querySelector(".seek_slider");
+            let volume_slider = document.querySelector(".volume_slider");
+            let curr_time = document.querySelector(".current-time");
+            let total_duration = document.querySelector(".total-duration");
+
+            let track_index = 0;
+            let isPlaying = false;
+            let updateTimer;
+
+            // create new audio element
+            let curr_track = document.getElementById("music");
+            
+            //
+            // DEFINE YOUR SONGS HERE!!!!!
+            // MORE THAN FOUR SONGS CAN BE ADDED!!
+            // JUST ADD ANOTHER BRACKET WITH NAME ARTIST AND PATH
+            // CATBOX.MOE IS RECOMMENDED FOR UPLOADING MP3 FILES IF YOU DON'T HAVE NEOCITIES SUPPORTER
+            let track_list = [
+            {
+                name:"ghost fight - UNDERTALE",
+                path:"https://files.catbox.moe/n59ebe.mp3"
+            },
+            {
+                name:"dummy! - UNDERTALE",
+                path:"https://files.catbox.moe/z3sfqa.mp3"
+            },
+            {
+                name:"spider dance - UNDERTALE",
+                path:"https://files.catbox.moe/cjnptq.mp3"
+            },
+            {
+                name: "death by glamour - UNDERTALE",
+                path: "https://files.catbox.moe/hiidpx.mp3",
+            },
+             {
+                name: "mad mew mew - UNDERTALE",
+                path: "https://files.catbox.moe/i6q0ml.mp3",
+            },
+            {
+                name:"NOW'S YOUR CHANCE TO BE - DELTARUNE",
+                path: "https://files.catbox.moe/39c3f2.mp3",
+            },
+            {
+                name:"BIG SHOT - DELTARUNE",
+                path: "https://files.catbox.moe/ldc7z2.mp3",
+            },
+        ];
+        //
+            //
+            //
+            //
+            //
+
+            function loadTrack(track_index){
+                clearInterval(updateTimer);
+                resetValues();
+
+                // load a new track
+                curr_track.src = track_list[track_index].path;
+                curr_track.load();
+
+                // update details of the track
+                track_name.textContent = track_list[track_index].name;
+                track_artist.textContent = track_list[track_index].artist;
+                now_playing.textContent = "now playing " + (track_index + 1) + " / " + track_list.length;
+
+                // set an interval of 1000 milliseconds for updating the seek slider
+                updateTimer = setInterval(seekUpdate, 1000);
+
+                // move to the next track if the current one finishes playing 
+                curr_track.addEventListener("ended", nextTrack);
+
+            }
+
+            // reset values
+            function resetValues(){
+                curr_time.textContent = "0:00";
+                total_duration.textContent = "0:00";
+                seek_slider.value = 0;
+            }
+
+            // load the first track in the tracklist
+            loadTrack(track_index);
+
+            // checks if song is playing
+            function playpauseTrack(){
+                if (!isPlaying) playTrack();
+                else pauseTrack();
+            }
+
+            // plays track when play button is pressed
+            function playTrack(){
+                curr_track.play();
+                isPlaying = true;
+
+                // replace icon with the pause icon
+                playpause_btn.innerHTML = '&#9646;';
+            }
+
+            // pauses track when pause button is pressed
+            function pauseTrack(){
+                curr_track.pause();
+                isPlaying = false;
+
+                playpause_btn.innerHTML = '&#9654;';
+            }
+
+            // moves to the next track
+            function nextTrack(){
+                if (track_index < track_list.length - 1)
+                    track_index += 1;
+                else track_index = 0;
+                loadTrack(track_index);
+                playTrack();
+            }
+
+            // moves to the previous track
+            function prevTrack(){
+                if (track_index > 0)
+                    track_index -= 1;
+                else track_index = track_list.length;
+                loadTrack(track_index);
+                playTrack();
+            }
+
+            // seeker slider
+            function seekTo(){
+                seekto = curr_track.duration * (seek_slider.value / 100);
+                curr_track.currentTime = seekto;
+            }
+
+            // volume slider
+            function setVolume(){
+                curr_track.volume = volume_slider.value / 100;
+            }
+
+            setVolume();
+
+            function seekUpdate(){
+                let seekPosition = 0;
+                
+                // check if the current track duration is a legible number
+                if (!isNaN(curr_track.duration)){
+                    seekPosition = curr_track.currentTime * (100 / curr_track.duration);
+                    seek_slider.value = seekPosition;
+
+                    // calculate the time left and the total duration
+                    let currentMinutes = Math.floor(curr_track.currentTime / 60);
+                    let currentSeconds = Math.floor(curr_track.currentTime - currentMinutes * 60);
+                    let durationMinutes = Math.floor(curr_track.duration / 60);
+                    let durationSeconds = Math.floor(curr_track.duration - durationMinutes * 60);
+
+                    // adding a zero to the single digit time values
+                    if (currentSeconds < 10){ currentSeconds = "0" + currentSeconds; }
+                    if (durationSeconds < 10){ durationSeconds = "0" + durationSeconds; }
+                    if (currentMinutes < 10){ currentMinutes = currentMinutes; }
+                    if (durationMinutes < 10){ durationMinutes = durationMinutes; }
+
+                    curr_time.textContent = currentMinutes + ":" + currentSeconds;
+                    total_duration.textContent = durationMinutes + ":" + durationSeconds;
+                }
+            }
+        </script></div></center>
+  <p></p>
+                    <h2><center>RESOURCES</center></h2>
+                    <div class="box">
+                    <ul style="padding-left:30px;">
+                        <li><a href="writing/index.html">Twitter @maxfearcoin</a></li>
+                        <li><a href="journaling/index.html">DEX SOON</a></li>
+                        <li><a href="pocket/index.html">CA HERE</a></li>
+                    </ul>
+                    </div>
+                    <p></p>
+                    <center><h2></h2></center>
+                    <div class="box"><center>
+
+</center>
+<br>
+<b>EMAIL:</b>
+maxfearcoin [AT] gmail.com
+<br>
+<b>DISCORD:</b> NONE</div>
+
+<p><img src="photos/deconapstablook.png" style="max-width:100%;
+max-height:100%;"></p>
+                    
+                </aside>
+                <main>
+                    <h1>Max Fear Coin....</h1>
+<p>* Welcome to <b>Max Pain Token</b> — a memecoin engineered for emotional and financial exhaustion.</p>
+<p>* This site exists as a reflection of market cruelty. It offers no comfort, no community, no promise of gains.</p>
+<p>* What you’ll find here are mechanics built to punish overconfidence, reward hesitation with regret, and transform volatility into a weapon against its holders.</p>
+<p>* Max Pain is not a movement. It is a simulation. A slow-motion chart of every bad decision, played out in real time.</p>
+<p>* If you’re looking for meaning, you won’t find it here. If you’re looking for profit, you’re already too late.</p>
+<p>* This site is under active construction — like your portfolio, it may collapse without warning.</p>
+
+
+
+
+<h2><center>like what i do?</center></h2>
+
+<center><h2>Hopeless</h2></center>
+<div class="box3" style="overflow-y:scroll">
+<center><script src="../dokode.moe/pokering/pokering.js"></script>
+<pokering-script site="https://ghostingpen.neocities.org"></pokering-script>
+
+<p><journal-ring icon="green"></journal-ring><script async src="../cdn.jsdelivr.net/gh/js044/nenrikido%40main/static/js/misc/journalring.js"></script></p>
+
+<p> <map name="noairing">
+<area href="https://baccyflap.com/noai" target="_blank" shape="rect" coords="15,15,124,66" alt="no ai webring" title="no ai webring">
+<area href="https://baccyflap.com/noai/?prv&amp;s=ghp" target="_top" shape="rect" coords="15,79,34,100" alt="previous" title="previous">
+<area href="https://baccyflap.com/noai/?rnd" target="_top" shape="rect" coords="44,71,95,108" alt="random" title="random">
+<area href="https://baccyflap.com/noai/?nxt&amp;s=ghp" target="_top" shape="rect" coords="105,79,125,100" alt="next" title="next">
+</map>
+<img usemap="#noairing" src="a703a18a73eadccf31cceec63abbc36c.jpg" style="width:360px;height:174px"  alt="an image of a little blue toy robot in a red-tinted circle made of art from all over the world. there's a red line, also made of art, running through the robot. next to it are the words NO AI WEBRING / HUMAN MADE 100% GUARANTEED and then two arrows, one pointing left, one right"> </p>
+
+<p><div id="autiring">
+<script type="text/javascript" src="../ballonlea.net/autiring/onionring-variables.js"></script>
+<script type="text/javascript" src="../ballonlea.net/autiring/onionring-widget.js"></script>
+</div></p>
+
+<p><script src="../transring.neocities.org/ring.js" data-widget="cloud"></script></p>
+
+
+<p><!--START OF SELF INSERT WEBRING-->
+			<div id="selfinsertwebring">
+				<script src="../koinuko.pink/shipping/webring/tryitscript.js"></script>
+					<body onload="setListNumber(), myFunction()"/>
+			
+			<!--IN THE SECTION BELOW, PLEASE CHANGE THE 0 (ZERO) TO WHATEVER-->
+			<!--NUMBER YOU WERE ASSIGNED! THANK YOU!  <3-->
+			
+				<script>
+					function setListNumber() {
+					positionInList = 274
+				    };
+				</script>
+			</div>
+			<!--END OF SELF INSERT WEBRING-->
+</p>
+</center></div>
+<P></P>
+
+
+
+                </main>
+         <aside id="rightSidebar" style="margin-left: 0px;"><h2><center>BUY LOGS ONCE DEX OPENS HERE</center></h2>
+            <div class="box">
+                <ul style="padding-left:30px;">
+                    LOGS
+            </div>
+            <p></p>
+</center></p>
+            </div>
+            
+            </aside>
+          
+         <nav id="navbar">
+
+                </nav>
+                <script>     
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+     var site_data = JSON.parse(this.responseText);
+     var num_arr = site_data.info.views.toString().split("");
+var num_str = "";
+for (i = 0; i < num_arr.length; i++) {
+        num_str += `<img src="photos/c%60%20%2b%20num_arr%5bi%5d%20%2b%20%60.html"/>`;
+ if ( (num_arr.length-1 - i) % 3 == 0 && (num_arr.length-1 - i) != 0 ) 
+var date_str = site_data.info.last_updated;
+var date_obj = new Date(site_data.info.last_updated);
+document.getElementById("lastupdate").innerHTML = (date_obj.getMonth()+1) + "-" + date_obj.getDate() + "-" + date_obj.getFullYear();
+}
+document.getElementById("hitcount").innerHTML = num_str;
+    }
+  };
+  xhttp.open("GET.html", "https://weirdscifi.ratiosemper.com/neocities.php?sitename=ghostingpen", true);
+  xhttp.send();
+</script>
+<p><center><span id="hitcount"></span> </center></p>
+                <center><p><a href="sitemap.html"><img src="photos/sitemapheart.png" width="12" length="12" alt="sitemap"></a></center>
+            <footer id="footer" style="margin-top: 0px;">© 2025-<script type="text/javascript">document.write( new Date().getFullYear() );</script> bonkfun</footer>
+        </div>
+        
+        <link rel="shortcut icon" type="image/x-icon" href="photos/favicon.html">
+        <!-- THIS IS THE CSS !-->
+        <style>
+            /* user styles */
+
+            /* styles are what change the color and sizes of stuff on your site. */
+
+            /* these are variables that are being used in the code
+    these tended to confuse some people, so I only kept 
+    the images as variables */
+
+            :root {
+                --header-image: url('photos/1e88867648daf3e05353612d9a2cb901.png');
+                --body-bg-image: url('');
+
+                /* colors */
+                --content: #43256E;
+            }
+
+            /* if you have the URL of a font, you can set it below */
+            /* feel free to delete this if it's not your vibe */
+
+            /* this seems like a lot for just one font and I would have to agree 
+    but I wanted to include an example of how to include a custom font.
+    If you download a font file you can upload it onto your Neocities
+    and then link it! Many fonts have separate files for each style
+    (bold, italic, etc. T_T) which is why there are so many!
+    
+    */
+
+            @font-face {
+                font-family: Pixel Operator;
+                src: url('fonts/Nintendo-DS-BIOS.ttf');
+            }
+
+
+            body {
+                font-family: 'Pixel Operator', sans-serif;
+                font-size:20px;
+                margin: 0;
+                background-color: #000000;
+                /* you can delete the line below if you'd prefer to not use an image */
+                background-size: 500px;
+                color: #ffffff;
+                background-image: var(--body-bg-image);
+                line-height:22px;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+            
+            a:hover {
+              text-decoration:none;
+            }
+
+            /* below this line is CSS for the layout */
+
+            /* this is a CSS comment
+    to uncomment a line of CSS, remove the * and the /
+    before and after the text */
+
+
+            /* the "container" is what wraps your entire website */
+            /* if you want something (like the header) to be Wider than
+    the other elements, you will need to move that div outside
+    of the container */
+            #container {
+                max-width: 900px;
+                /* this is the width of your layout! */
+                /* if you change the above value, scroll to the bottom
+      and change the media query according to the comment! */
+                margin: 0 auto;
+                /* this centers the entire page */
+            }
+
+            /* the area below is for all links on your page
+    EXCEPT for the navigation */
+            #container a {
+                color: #d82b2b;
+                font-weight: bold;
+                text-decoration: none;
+                /* if you want to remove the underline
+      you can add a line below here that says:
+      text-decoration:none; */
+            }
+            
+            #container a:hover {
+                color: #FFFF00;
+                font-weight: bold;
+                text-decoration: none;
+                /* if you want to remove the underline
+      you can add a line below here that says:
+      text-decoration:none; */
+            }
+            
+
+            #header {
+                width: 100%;
+                background-color: #000000;
+                /* header color here! */
+                height: 150px;
+                /* this is only for a background image! */
+                /* if you want to put images IN the header, 
+      you can add them directly to the <div id="header"></div> element! */
+                background-image: var(--header-image);
+                background-size: 100%;
+                 background-repeat: no-repeat;
+            }
+
+            /* navigation section!! */
+            #navbar {
+                height: 60px;
+                background-color: #000000;
+                /* navbar color */
+                width: 100%;
+            }
+
+            #navbar ul {
+                display: flex;
+                padding: 10px;
+                margin: 25px;
+                list-style-type: none;
+                justify-content: space-evenly;
+            }
+
+            #navbar li {
+                padding-top: 10px;
+            }
+
+            /* navigation links*/
+            #navbar li a {
+                color: #ff7124;
+                /* navbar text color */
+                font-weight: 800;
+                text-decoration: none;
+                outline:solid;
+                outline-offset:5px;
+                outline-color: #ff7124;
+                /* this removes the underline */
+            }
+
+            /* navigation link when a link is hovered over */
+            #navbar li a:hover {
+              text-decoration: none;
+                outline:solid;
+                outline-offset:5px;
+                outline-color: #ffff00;
+            }
+
+            #flex {
+                display: flex;
+            }
+
+            /* this colors BOTH sidebars
+    if you want to style them separately,
+    create styles for #leftSidebar and #rightSidebar */
+            aside {
+                background-color: #000000;
+                width: 200px;
+                padding: 20px;
+                outline:solid;
+                outline-color: #ffffff;
+                /* this makes the sidebar text slightly smaller */
+            }
+
+
+            /* this is the color of the main content area,
+    between the sidebars! */
+            main {
+                background-color: #000000;
+                flex: 1;
+                padding: 20px;
+                order: 2;
+                outline:solid;
+                outline-color: #ffffff;
+                
+            }
+
+            /* what's this "order" stuff about??
+    allow me to explain!
+    if you're using both sidebars, the "order" value
+    tells the CSS the order in which to display them.
+    left sidebar is 1, content is 2, and right sidebar is 3! */
+
+            */ #leftSidebar {
+                order: 1;
+            }
+
+            #rightSidebar {
+                order: 3;
+            }
+
+            footer {
+                background-color: #000000;
+                /* background color for footer */
+                width: 100%;
+                height: 40px;
+                padding: 10px;
+                text-align: center;
+                outline:solid;
+                outline-color: #ffffff;
+                /* this centers the footer text */
+            }
+
+            h1,
+            h2,
+            h3 {
+                color: #ffffff;
+                margin-top:5px;
+            }
+
+            h1 {
+                font-size: 35px;
+            }
+            
+            h2 {
+                font-size: 25px;
+            }
+            
+            h3 {
+                font-size: 20px;
+            }
+
+            strong {
+                /* this styles bold text */
+                color: #ffffff;
+            }
+
+            /* this is just a cool box, it's the darker colored one */
+            .box {
+                background-color: #000000;
+                border: 1px solid #ffffff;
+                padding: 10px;
+            }
+            
+            * {
+              box-sizing: border-box;
+            }
+            
+            .box2 {
+                background-color: #000000;
+                border: 1px solid #ffffff;
+                padding: 10px;
+                width: 50%;
+                height: 230px;
+                float: left;
+            }
+            
+             .box3 {
+                background-color: #000000;
+                border: 1px solid #ffffff;
+                padding: 10px;
+                height: 250px;
+             }
+            
+            
+            .clearfix::after {
+             content: "";
+             clear: both;
+             display: table;
+            }
+
+            /* CSS for extras */
+
+            #topBar {
+                width: 100%;
+                height: 30px;
+                padding: 10px;
+                font-size: smaller;
+                background-color: #13092D;
+            }
+            
+          pre {
+  display: block;
+  background-color: gray;
+  border: 2px solid #ffffff;
+  font-size:12px;
+  font-family: monospace;
+  white-space: pre-wrap;
+    overflow-x: auto;
+  overflow-y: scroll;
+  margin: 1em 0;
+  max-width:200px
+} 
+
+        #statuscafe {
+    padding: .5em;
+    background-color: black;
+    border: 1px solid white;
+    border-radius: 15px;
+}
+#statuscafe-username {
+    margin-bottom: .5em;
+}
+#statuscafe-content {
+    margin: 0 1em 0.5em 1em;
+}
+
+        <style>
+            #musicplayer{
+                background:black; /* background color of player */
+                border:4px solid white; /* border around player */
+                width:100%; /* width of the player - make it 100% if you want it to fill your container */
+                padding:10px;
+                text-align:center; 
+                display:flex;
+                flex-direction:column;
+                gap:10px;
+            }
+
+            .songtitle, .track-info, .now-playing{
+                padding:5px;
+            }
+
+            .controls{
+                display:flex; 
+                flex-direction:column; 
+                gap:10px;
+            }
+
+            .buttons{
+                display:flex;
+                justify-content:center;
+                font-size:12px !important; /* size of controls */
+                width:100%;
+            }
+
+            .buttons div{
+                width:33.3%;
+            }
+
+            .playpause-track, .prev-track, .next-track{
+                font-family:arial;
+                color:white; /* color of buttons */
+                font-size:20px !important; /* size of buttons */
+            }
+
+            .volume-icon{
+                font-size:22px !important; /* size of volume icon */
+            }
+
+            .seeking, .volume{
+                display:flex;
+                flex-direction:row;
+                align-items:center;
+                gap:5px;
+            }
+
+            .now-playing, .track-info{
+                background-color:black; /* background color of top two boxes */
+            }
+
+            .track-name{
+                font-weight:bold;
+            }
+
+            input[type=range]{
+              background:black;
+                width:100%;
+                
+            }
+
+            input[type=range]:focus{
+                outline:none; /* removes outline around tracks when focusing */
+            }
+
+            input[type=range]::-webkit-slider-runnable-track{
+                width:100%;
+                height:4px; /* thickness of seeking track */
+                background:white; /* color of seeking track */
+            }
+
+            input[type=range]::-webkit-slider-thumb{
+                height:10px; /* height of seeking square */
+                width:10px; /* width of seeking square */
+                border-radius:0px; /* change to 5px if you want a circle seeker */
+                background:white; /* color of seeker square */
+                -webkit-appearance:none;
+                margin-top:-3px; /* fixes the weird margin around the seeker square in chrome */
+            }
+
+            input[type=range]::-moz-range-track{
+                width:100%;
+                height:4px; /* thickness of seeking track */
+                background:white; /* color of seeking track */
+            }
+
+            input[type=range]::-moz-range-thumb{
+                height:10px; /* height of seeking square */
+                width:10px; /* width of seeking square */
+                border-radius:0px; /* change to 5px if you want a circle seeker */
+                background:white; /* color of seeker square */
+                border:none; /* removes weird border around seeker square in firefox */
+            }
+
+            /* BELOW THIS POINT IS MEDIA QUERY */
+
+            /* so you wanna change the width of your page? 
+    by default, the container width is 900px.
+    in order to keep things responsive, take your new height,
+    and then subtrack it by 100. use this new number as the 
+    "max-width" value below
+    */
+
+            @media only screen and (max-width: 800px) {
+                #flex {
+                    flex-wrap: wrap;
+                }
+
+                aside {
+                    width: 100%;
+                }
+
+                /* the order of the items is adjusted here for responsiveness!
+      since the sidebars would be too small on a mobile device.
+      feel free to play around with the order!
+      */
+                main {
+                    order: 1;
+                }
+
+                #leftSidebar {
+                    order: 2;
+                }
+
+                #rightSidebar {
+                    order: 3;
+                }
+
+                #navbar ul {
+                    flex-wrap: wrap;
+                }
+            }
+        </style>
+
+    
+  </body>
+
+<!-- Mirrored from ghostingpen.neocities.org/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 23 Jul 2025 15:16:34 GMT -->
+</html>
